@@ -4,4 +4,4 @@ from .models import Service
 class ServiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Service
-        fields = ['name', 'description', 'created_at']
+        fields = ['id', 'name', 'description', 'created_at']

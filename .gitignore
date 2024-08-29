@@ -1,1 +1,20 @@
-**/python_environment
+# General Python and Django
+*.pyc
+__pycache__/
+*.egg-info/
+*.pot
+.tox/
+build/
+dist/
+python_environment/
+
+# Django specific
+db.sqlite3
+local_settings.py
+media/
+static/
+*.log
+
+# IDE specific
+.idea/
+.vscode/

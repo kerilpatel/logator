@@ -1,2 +1,2 @@
-# logator
-Logator
+# Logator
+Scalable Log Aggregation System

@@ -13,7 +13,7 @@ class ServiceRegistrationAPIView(APIView):
     def post(self, request):
         serializer = ServiceSerializer(data=request.data)
         if serializer.is_valid():
-            service = serializer.save()
+            service = serializer.save(user=request.user)
             response_data = {
                 "api_key": service.api_key,
                 "secret_key": service.secret_key

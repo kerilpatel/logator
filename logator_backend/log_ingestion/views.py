@@ -26,9 +26,19 @@ class LogRetrievalAPIView(APIView):
         except Service.DoesNotExist:
             return Response({"error": "Service not found or you do not have access to it"}, status=status.HTTP_404_NOT_FOUND)
 
+# API Security Requirements:
+# - JSON Format: Compact, no spaces, UTF-8 encoded.
+# - HMAC Signature: SHA-256, generated from the concatenated string of the JSON payload and a UNIX timestamp.
+# - Timestamp: Sent as a UNIX timestamp in seconds, must be within 5 minutes of the server time.
 
 def verify_hmac_signature(secret_key, message, client_signature, client_timestamp):
-    message_bytes = (message + client_timestamp).encode('utf-8')
+    try:
+        parsed_message = json.loads(message)
+        standardized_message = json.dumps(parsed_message, separators=(',', ':'))
+    except json.JSONDecodeError:
+        standardized_message = message
+    
+    message_bytes = (standardized_message + client_timestamp).encode('utf-8')
     secret_bytes = secret_key.encode('utf-8')
     server_signature = hmac.new(secret_bytes, message_bytes, hashlib.sha256).hexdigest()
     return hmac.compare_digest(server_signature, client_signature)

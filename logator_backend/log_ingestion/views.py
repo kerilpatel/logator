@@ -30,7 +30,7 @@ class LogRetrievalAPIView(APIView):
 def verify_hmac_signature(secret_key, message, client_signature, client_timestamp):
     message_bytes = (message + client_timestamp).encode('utf-8')
     secret_bytes = secret_key.encode('utf-8')
-    server_signature = hmac.new(secret_bytes, message_bytes, hashlib.sha256).hexdigest
+    server_signature = hmac.new(secret_bytes, message_bytes, hashlib.sha256).hexdigest()
     return hmac.compare_digest(server_signature, client_signature)
 
 def api_key_required(view_func):

@@ -1,10 +1,15 @@
 from rest_framework import serializers, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
 from .models import Service
 from .serializers import ServiceSerializer
 
 class ServiceRegistrationAPIView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    
     def post(self, request):
         serializer = ServiceSerializer(data=request.data)
         if serializer.is_valid():

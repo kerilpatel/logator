@@ -13,8 +13,11 @@ class UserRegistrationAPIView(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response({"message": "User registered successfully"}, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+        else:
+            errors = serializer.errors
+            error_messages = {field: ", ".join(map(str, msgs)) for field, msgs in errors.items()}
+            consolidated_errors = "; ".join([f"{field}: {msgs}" for field, msgs in error_messages.items()])
+            return Response({"error": consolidated_errors}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
 def login_view(request):

@@ -24,7 +24,7 @@ class LogRetrievalAPIView(APIView):
             serializer = LogSerializer(logs, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Service.DoesNotExist:
-            return Response({"error": "Service not found or you do not have access to it"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": "Service not found or you do not have access to it"}, status=status.HTTP_400_BAD_REQUEST)
 
 # API Security Requirements:
 # - JSON Format: Compact, no spaces, UTF-8 encoded.
@@ -50,20 +50,20 @@ def api_key_required(view_func):
         client_timestamp = request.headers.get('Timestamp')
 
         if not api_key or not client_signature or not client_timestamp:
-            return JsonResponse({'error': 'Missing authentication headers'}, status=403)
+            return JsonResponse({'error': 'Missing authentication headers'}, status=400)
 
         try:
             service = Service.objects.get(api_key=api_key)
             request.service = service
 
             if not verify_hmac_signature(service.secret_key, request.body.decode('utf-8'), client_signature, client_timestamp):
-                return JsonResponse({'error': 'Invalid HMAC signature'}, status=403)
+                return JsonResponse({'error': 'Invalid HMAC signature'}, status=400)
 
             if abs(int(time.time()) - int(client_timestamp)) > 300:  # 5 minutes tolerance
-                return JsonResponse({'error': 'Timestamp is too old'}, status=403)
+                return JsonResponse({'error': 'Timestamp is too old'}, status=400)
 
         except Service.DoesNotExist:
-            return JsonResponse({'error': 'Invalid API key'}, status=403)
+            return JsonResponse({'error': 'Invalid API key'}, status=400)
 
         return view_func(request, *args, **kwargs)
     return _wrapped_view

@@ -77,6 +77,7 @@ def log_ingestion_view(request):
         service=service,
         timestamp=log_data['timestamp'],
         log_level=log_data['log_level'],
+        log_tag=log_data['log_tag'],
         message=log_data['message']
     )
     return JsonResponse({"status": "Log ingested"}, status=201)

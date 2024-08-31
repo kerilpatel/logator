@@ -4,4 +4,4 @@ from .models import Log
 class LogSerializer(serializers.ModelSerializer):
     class Meta:
         model = Log
-        fields = ['timestamp', 'log_level', 'message']
+        fields = ['service', 'timestamp', 'log_level', 'log_tag', 'message']

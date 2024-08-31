@@ -50,20 +50,20 @@ def api_key_required(view_func):
         client_timestamp = request.headers.get('Timestamp')
 
         if not api_key or not client_signature or not client_timestamp:
-            return JsonResponse({'error': 'Missing authentication headers'}, status=400)
+            return JsonResponse({'error': 'Missing authentication headers'}, status=403)
 
         try:
             service = Service.objects.get(api_key=api_key)
             request.service = service
 
             if not verify_hmac_signature(service.secret_key, request.body.decode('utf-8'), client_signature, client_timestamp):
-                return JsonResponse({'error': 'Invalid HMAC signature'}, status=400)
+                return JsonResponse({'error': 'Invalid HMAC signature'}, status=403)
 
             if abs(int(time.time()) - int(client_timestamp)) > 300:  # 5 minutes tolerance
-                return JsonResponse({'error': 'Timestamp is too old'}, status=400)
+                return JsonResponse({'error': 'Timestamp is too old'}, status=403)
 
         except Service.DoesNotExist:
-            return JsonResponse({'error': 'Invalid API key'}, status=400)
+            return JsonResponse({'error': 'Invalid API key'}, status=403)
 
         return view_func(request, *args, **kwargs)
     return _wrapped_view

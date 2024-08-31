@@ -17,3 +17,8 @@ class Log(models.Model):
 
     def __str__(self):
         return f"{self.timestamp} - {self.service.name} - {self.log_level}"
+    
+    def save(self, *args, **kwargs):
+        # Convert log_level to uppercase to ensure consistency in database storage
+        self.log_level = self.log_level.upper()
+        super(Log, self).save(*args, **kwargs)

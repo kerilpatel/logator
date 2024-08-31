@@ -19,7 +19,11 @@ class ServiceRegistrationAPIView(APIView):
                 "secret_key": service.secret_key
             }
             return Response(response_data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            errors = serializer.errors
+            error_messages = {field: ", ".join(map(str, msgs)) for field, msgs in errors.items()}
+            consolidated_errors = "; ".join([f"{field}: {msgs}" for field, msgs in error_messages.items()])
+            return Response({"error": consolidated_errors}, status=status.HTTP_400_BAD_REQUEST)
     
     def get(self, request, service_id=None):
         if service_id:
@@ -28,7 +32,7 @@ class ServiceRegistrationAPIView(APIView):
                 serializer = ServiceSerializer(service)
                 return Response(serializer.data)
             except Service.DoesNotExist:
-                return Response({"error": "Service not found"}, status=status.HTTP_404_NOT_FOUND)
+                return Response({"error": "Service not found"}, status=status.HTTP_400_BAD_REQUEST)
         else:
             services = Service.objects.all()
             serializer = ServiceSerializer(services, many=True)

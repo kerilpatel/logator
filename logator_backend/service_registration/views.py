@@ -26,14 +26,15 @@ class ServiceRegistrationAPIView(APIView):
             return Response({"error": consolidated_errors}, status=status.HTTP_400_BAD_REQUEST)
     
     def get(self, request, service_id=None):
+        user = request.user
         if service_id:
             try:
-                service = Service.objects.get(id=service_id)
+                service = Service.objects.get(id=service_id, user=user)
                 serializer = ServiceSerializer(service)
                 return Response(serializer.data)
             except Service.DoesNotExist:
-                return Response({"error": "Service not found"}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({"error": "Service not found"}, status=status.HTTP_404_NOT_FOUND)
         else:
-            services = Service.objects.all()
+            services = Service.objects.filter(user=user)
             serializer = ServiceSerializer(services, many=True)
             return Response(serializer.data)

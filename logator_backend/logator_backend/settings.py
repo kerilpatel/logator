@@ -25,6 +25,8 @@ SECRET_KEY = 'django-insecure-vwr%3)#)%3_n16%q&$x9ym!i3m7hc18hg7x+c^5q^=vf4$-aup
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+CORS_ALLOWED_ORIGINS = ['http://localhost:3000']
+
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
@@ -40,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
+    'corsheaders',
     'authentication',
     'service_registration',
     'log_ingestion'
@@ -53,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware'
 ]
 
 ROOT_URLCONF = 'logator_backend.urls'

@@ -1,3 +1,5 @@
+###### logator_backend ######
+
 # General Python and Django
 *.pyc
 __pycache__/
@@ -18,3 +20,30 @@ static/
 # IDE specific
 .idea/
 .vscode/
+
+###### logator_frontend ######
+
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/logator_dashboard/node_modules
+/logator_dashboard/.pnp
+.pnp.js
+
+# testing
+/logator_dashboard/coverage
+
+# production
+/logator_dashboard/build
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
